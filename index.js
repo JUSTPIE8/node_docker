@@ -3,6 +3,8 @@ const mongoose=require('mongoose')
 const postRouter=require('./routes/postRoutes')
 const authRouter=require("./routes/authRoute")
 
+const cors=require('cors')
+
 const session=require('express-session')
 //const redis=require('redis')
 const ioredis=require('ioredis')
@@ -20,7 +22,8 @@ mongoose.connect(mongoUrl).then(
     ()=>console.log("sucessfully connected to database")
 ).catch((e)=>console.log(e));
 
-
+app.enable('trust proxy')
+app.use(cors({}));
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
@@ -35,7 +38,12 @@ app.use(
       maxAge:600000
     }
   }));
-  
+app.get("/",(req,res)=>{
+  res.send("hello world ");
+  console.log("hello")
+})
+
+
   app.use('/posts',postRouter)
 app.use('/auth',authRouter)
 
